@@ -39,6 +39,52 @@ func TestVisitPointer(t *testing.T) {
 	}
 }
 
+func TestPartialVisitPointer(t *testing.T) {
+	var visitor Visitor
+	var visited []interface{}
+	visitor = func(v interface{}) Visitor {
+		visited = append(visited, v)
+		if _, ok := v.(*int); ok {
+			return nil
+		}
+		return visitor
+	}
+	v := 1
+	Visit(&v, visitor)
+	if len(visited) != 1 {
+		t.Fatal("visited")
+	}
+	if _, ok := visited[0].(*int); !ok {
+		t.Fatal("visited")
+	}
+}
+
+func TestPartialVisitPointer2(t *testing.T) {
+	var visitor Visitor
+	var visited []interface{}
+	visitor = func(v interface{}) Visitor {
+		visited = append(visited, v)
+		if _, ok := v.(int); ok {
+			return nil
+		}
+		return visitor
+	}
+	v := []int{1, 2, 3}
+	Visit(&v, visitor)
+	if len(visited) != 3 {
+		t.Fatal("visited")
+	}
+	if _, ok := visited[0].(*[]int); !ok {
+		t.Fatal("visited")
+	}
+	if _, ok := visited[1].([]int); !ok {
+		t.Fatal("visited")
+	}
+	if v, ok := visited[2].(int); !ok || v != 1 {
+		t.Fatal("visited")
+	}
+}
+
 func TestVisitSlice(t *testing.T) {
 	var visitor Visitor
 	var visited []interface{}
