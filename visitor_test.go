@@ -58,6 +58,46 @@ func TestVisitSlice(t *testing.T) {
 	}
 }
 
+func TestVisitSliceOfStruct(t *testing.T) {
+	var visitor Visitor
+	var visited []interface{}
+	type Foo struct {
+		I int
+	}
+	visitor = func(v interface{}) Visitor {
+		visited = append(visited, v)
+		return visitor
+	}
+	v := []Foo{
+		{1}, {2}, {3},
+	}
+	Visit(v, visitor)
+	if len(visited) != 7 {
+		t.Fatal("visited")
+	}
+	if _, ok := visited[0].([]Foo); !ok {
+		t.Fatal("visited")
+	}
+	if v, ok := visited[1].(Foo); !ok || v.I != 1 {
+		t.Fatal("visited")
+	}
+	if v, ok := visited[2].(int); !ok || v != 1 {
+		t.Fatal("visited")
+	}
+	if v, ok := visited[3].(Foo); !ok || v.I != 2 {
+		t.Fatal("visited")
+	}
+	if v, ok := visited[4].(int); !ok || v != 2 {
+		t.Fatal("visited")
+	}
+	if v, ok := visited[5].(Foo); !ok || v.I != 3 {
+		t.Fatal("visited")
+	}
+	if v, ok := visited[6].(int); !ok || v != 3 {
+		t.Fatal("visited")
+	}
+}
+
 func TestVisitStruct(t *testing.T) {
 	var visitor Visitor
 	var visited []interface{}
