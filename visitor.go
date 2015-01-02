@@ -1,6 +1,13 @@
 package visitor
 
-import "reflect"
+import (
+	"fmt"
+	"reflect"
+)
+
+var (
+	pt = fmt.Printf
+)
 
 type Visitor func(interface{}) Visitor
 
@@ -50,5 +57,5 @@ func visit(v reflect.Value, visitor Visitor) Visitor {
 	default:
 		return visitor(v.Interface())
 	}
-	return nil
+	return visitor
 }

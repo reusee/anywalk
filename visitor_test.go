@@ -158,3 +158,130 @@ func TestPartialVisitSlice2(t *testing.T) {
 		t.Fatal("visited")
 	}
 }
+
+func TestPartialVisitStruct(t *testing.T) {
+	var visitor Visitor
+	var visited []interface{}
+	type Foo struct {
+		I int
+	}
+	visitor = func(v interface{}) Visitor {
+		visited = append(visited, v)
+		if v, ok := v.(Foo); ok && v.I == 2 {
+			return nil
+		}
+		return visitor
+	}
+	v := []Foo{
+		{1}, {2}, {3},
+	}
+	Visit(v, visitor)
+	if len(visited) != 4 {
+		t.Fatal("visited")
+	}
+	if _, ok := visited[0].([]Foo); !ok {
+		t.Fatal("visited")
+	}
+	if v, ok := visited[1].(Foo); !ok || v.I != 1 {
+		t.Fatal("visited")
+	}
+	if v, ok := visited[2].(int); !ok || v != 1 {
+		t.Fatal("visited")
+	}
+	if v, ok := visited[3].(Foo); !ok || v.I != 2 {
+		t.Fatal("visited")
+	}
+}
+
+func TestPartialVisitStruct2(t *testing.T) {
+	var visitor Visitor
+	var visited []interface{}
+	type Foo struct {
+		I int
+	}
+	visitor = func(v interface{}) Visitor {
+		visited = append(visited, v)
+		if v, ok := v.(int); ok && v == 1 {
+			return nil
+		}
+		return visitor
+	}
+	v := []Foo{
+		{1}, {2}, {3},
+	}
+	Visit(v, visitor)
+	if len(visited) != 3 {
+		t.Fatal("visited")
+	}
+	if _, ok := visited[0].([]Foo); !ok {
+		t.Fatal("visited")
+	}
+	if v, ok := visited[1].(Foo); !ok || v.I != 1 {
+		t.Fatal("visited")
+	}
+	if v, ok := visited[2].(int); !ok || v != 1 {
+		t.Fatal("visited")
+	}
+}
+
+func TestPartialVisitMap(t *testing.T) {
+	var visitor Visitor
+	var visited []interface{}
+	visitor = func(v interface{}) Visitor {
+		visited = append(visited, v)
+		if _, ok := v.(map[int]int); ok {
+			return nil
+		}
+		return visitor
+	}
+	v := []map[int]int{
+		{1: 1},
+		{1: 2},
+	}
+	Visit(v, visitor)
+	if len(visited) != 2 {
+		t.Fatal("visited")
+	}
+	if _, ok := visited[0].([]map[int]int); !ok {
+		t.Fatal("visited")
+	}
+	if v, ok := visited[1].(map[int]int); !ok || v[1] != 1 {
+		t.Fatal("visited")
+	}
+}
+
+func TestPartialVisitMap2(t *testing.T) {
+	var visitor Visitor
+	var visited []interface{}
+	visitor = func(v interface{}) Visitor {
+		visited = append(visited, v)
+		if v, ok := v.(int); ok && v == 2 {
+			return nil
+		}
+		return visitor
+	}
+	v := []map[int]int{
+		{1: 1},
+		{1: 2},
+		{1: 3},
+	}
+	Visit(v, visitor)
+	if len(visited) != 5 {
+		t.Fatal("visited")
+	}
+	if _, ok := visited[0].([]map[int]int); !ok {
+		t.Fatal("visited")
+	}
+	if v, ok := visited[1].(map[int]int); !ok || v[1] != 1 {
+		t.Fatal("visited")
+	}
+	if v, ok := visited[2].(int); !ok || v != 1 {
+		t.Fatal("visited")
+	}
+	if v, ok := visited[3].(map[int]int); !ok || v[1] != 2 {
+		t.Fatal("visited")
+	}
+	if v, ok := visited[4].(int); !ok || v != 2 {
+		t.Fatal("visited")
+	}
+}
