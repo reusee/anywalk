@@ -20,7 +20,14 @@ func visit(v reflect.Value, visitor Visitor) Visitor {
 	kind := t.Kind()
 	switch kind {
 	case reflect.Ptr:
-		return visit(v.Elem(), visitor)
+		visitor = visitor(v.Interface())
+		if visitor == nil {
+			break
+		}
+		visitor = visit(v.Elem(), visitor)
+		if visitor == nil {
+			break
+		}
 	case reflect.Slice, reflect.Array:
 		visitor = visitor(v.Interface())
 		if visitor == nil {

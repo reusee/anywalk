@@ -28,10 +28,13 @@ func TestVisitPointer(t *testing.T) {
 	}
 	v := 1
 	Visit(&v, visitor)
-	if len(visited) != 1 {
+	if len(visited) != 2 {
 		t.Fatal("visited")
 	}
-	if v, ok := visited[0].(int); !ok || v != 1 {
+	if _, ok := visited[0].(*int); !ok {
+		t.Fatal("visited")
+	}
+	if v, ok := visited[1].(int); !ok || v != 1 {
 		t.Fatal("visited")
 	}
 }
