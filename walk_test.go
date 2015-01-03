@@ -374,3 +374,26 @@ func TestPartialVisitMap2(t *testing.T) {
 		t.Fatal("visited")
 	}
 }
+
+func TestVisitInvalidValue(t *testing.T) {
+	var visitor Visitor
+	var visited []interface{}
+	visitor = func(v interface{}) Visitor {
+		visited = append(visited, v)
+		return visitor
+	}
+	type Foo struct {
+		P *int
+	}
+	v := Foo{}
+	Walk(v, visitor)
+	if len(visited) != 2 {
+		t.Fatal("visited")
+	}
+	if _, ok := visited[0].(Foo); !ok {
+		t.Fatal("visited")
+	}
+	if _, ok := visited[1].(*int); !ok {
+		t.Fatal("visited")
+	}
+}

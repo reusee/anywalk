@@ -353,3 +353,35 @@ func TestPartialMapkVisitWithKey2(t *testing.T) {
 		t.Fatal("visited")
 	}
 }
+
+func TestVisitWithKeyInvalidValue(t *testing.T) {
+	var visitor VisitorWithKey
+	type Visited struct {
+		Value, Key interface{}
+	}
+	var visited []Visited
+	visitor = func(v, k interface{}) VisitorWithKey {
+		visited = append(visited, Visited{v, k})
+		return visitor
+	}
+	type Foo struct {
+		P *int
+	}
+	v := Foo{}
+	WalkWithKey(v, visitor)
+	if len(visited) != 2 {
+		t.Fatal("visited")
+	}
+	if _, ok := visited[0].Value.(Foo); !ok {
+		t.Fatal("visited")
+	}
+	if visited[0].Key != nil {
+		t.Fatal("visited")
+	}
+	if _, ok := visited[1].Value.(*int); !ok {
+		t.Fatal("visited")
+	}
+	if v, ok := visited[1].Key.(string); !ok || v != "P" {
+		t.Fatal("visited")
+	}
+}

@@ -9,6 +9,9 @@ func WalkWithKey(v interface{}, visitor VisitorWithKey) {
 }
 
 func walkWithKey(v reflect.Value, key interface{}, visitor VisitorWithKey) VisitorWithKey {
+	if !v.IsValid() {
+		return visitor
+	}
 	t := v.Type()
 	kind := t.Kind()
 	switch kind {

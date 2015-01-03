@@ -16,6 +16,9 @@ func Walk(v interface{}, visitor Visitor) {
 }
 
 func walk(v reflect.Value, visitor Visitor) Visitor {
+	if !v.IsValid() {
+		return visitor
+	}
 	t := v.Type()
 	kind := t.Kind()
 	switch kind {
