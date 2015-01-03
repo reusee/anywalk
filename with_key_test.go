@@ -1,4 +1,4 @@
-package visitor
+package anywalk
 
 import "testing"
 
@@ -28,7 +28,7 @@ func TestVisitWithKeyBasic(t *testing.T) {
 			3: "baz",
 		},
 	}
-	VisitWithKey(v, visitor)
+	WalkWithKey(v, visitor)
 
 	if len(visited) != 11 {
 		t.Fatal("visited")
@@ -110,7 +110,7 @@ func TestPartialVisitWithKey(t *testing.T) {
 	}
 	i := 5
 	v := []*int{&i}
-	VisitWithKey(v, visitor)
+	WalkWithKey(v, visitor)
 	if len(visited) != 2 {
 		t.Fatal("visited")
 	}
@@ -143,7 +143,7 @@ func TestPartialVisitWithKey2(t *testing.T) {
 	}
 	i := 5
 	v := []*int{&i}
-	VisitWithKey(v, visitor)
+	WalkWithKey(v, visitor)
 	if len(visited) != 3 {
 		t.Fatal("visited")
 	}
@@ -182,7 +182,7 @@ func TestPartialSliceVisitWithKey(t *testing.T) {
 	}
 	i := 5
 	v := []*int{&i}
-	VisitWithKey(v, visitor)
+	WalkWithKey(v, visitor)
 	if len(visited) != 1 {
 		t.Fatal("visited")
 	}
@@ -213,7 +213,7 @@ func TestPartialStructkVisitWithKey(t *testing.T) {
 	v := []Foo{
 		{42},
 	}
-	VisitWithKey(v, visitor)
+	WalkWithKey(v, visitor)
 	if len(visited) != 2 {
 		t.Fatal("visited")
 	}
@@ -250,7 +250,7 @@ func TestPartialStructkVisitWithKey2(t *testing.T) {
 	v := []Foo{
 		{42},
 	}
-	VisitWithKey(v, visitor)
+	WalkWithKey(v, visitor)
 	if len(visited) != 3 {
 		t.Fatal("visited")
 	}
@@ -293,7 +293,7 @@ func TestPartialMapkVisitWithKey(t *testing.T) {
 			"bar": "BAR",
 		},
 	}
-	VisitWithKey(v, visitor)
+	WalkWithKey(v, visitor)
 	if len(visited) != 2 {
 		t.Fatal("visited")
 	}
@@ -330,7 +330,7 @@ func TestPartialMapkVisitWithKey2(t *testing.T) {
 			"bar": "BAR",
 		},
 	}
-	VisitWithKey(v, visitor)
+	WalkWithKey(v, visitor)
 	if len(visited) != 3 {
 		t.Fatal("visited")
 	}

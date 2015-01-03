@@ -1,4 +1,4 @@
-package visitor
+package anywalk
 
 import (
 	"fmt"
@@ -11,11 +11,11 @@ var (
 
 type Visitor func(interface{}) Visitor
 
-func Visit(v interface{}, visitor Visitor) {
-	visit(reflect.ValueOf(v), visitor)
+func Walk(v interface{}, visitor Visitor) {
+	walk(reflect.ValueOf(v), visitor)
 }
 
-func visit(v reflect.Value, visitor Visitor) Visitor {
+func walk(v reflect.Value, visitor Visitor) Visitor {
 	t := v.Type()
 	kind := t.Kind()
 	switch kind {
@@ -24,7 +24,7 @@ func visit(v reflect.Value, visitor Visitor) Visitor {
 		if visitor == nil {
 			break
 		}
-		visitor = visit(v.Elem(), visitor)
+		visitor = walk(v.Elem(), visitor)
 		if visitor == nil {
 			break
 		}
@@ -34,7 +34,7 @@ func visit(v reflect.Value, visitor Visitor) Visitor {
 			break
 		}
 		for i := 0; i < v.Len(); i++ {
-			visitor = visit(v.Index(i), visitor)
+			visitor = walk(v.Index(i), visitor)
 			if visitor == nil {
 				break
 			}
@@ -45,7 +45,7 @@ func visit(v reflect.Value, visitor Visitor) Visitor {
 			break
 		}
 		for i := 0; i < v.NumField(); i++ {
-			visitor = visit(v.Field(i), visitor)
+			visitor = walk(v.Field(i), visitor)
 			if visitor == nil {
 				break
 			}
@@ -56,7 +56,7 @@ func visit(v reflect.Value, visitor Visitor) Visitor {
 			break
 		}
 		for _, key := range v.MapKeys() {
-			visitor = visit(v.MapIndex(key), visitor)
+			visitor = walk(v.MapIndex(key), visitor)
 			if visitor == nil {
 				break
 			}

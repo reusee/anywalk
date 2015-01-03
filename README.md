@@ -1,4 +1,4 @@
-visitor
+anywalk
 =======
 
-visit any value recursively
+walk any value recursively

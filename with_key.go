@@ -1,14 +1,14 @@
-package visitor
+package anywalk
 
 import "reflect"
 
 type VisitorWithKey func(interface{}, interface{}) VisitorWithKey
 
-func VisitWithKey(v interface{}, visitor VisitorWithKey) {
-	visitWithKey(reflect.ValueOf(v), nil, visitor)
+func WalkWithKey(v interface{}, visitor VisitorWithKey) {
+	walkWithKey(reflect.ValueOf(v), nil, visitor)
 }
 
-func visitWithKey(v reflect.Value, key interface{}, visitor VisitorWithKey) VisitorWithKey {
+func walkWithKey(v reflect.Value, key interface{}, visitor VisitorWithKey) VisitorWithKey {
 	t := v.Type()
 	kind := t.Kind()
 	switch kind {
@@ -17,7 +17,7 @@ func visitWithKey(v reflect.Value, key interface{}, visitor VisitorWithKey) Visi
 		if visitor == nil {
 			break
 		}
-		visitor = visitWithKey(v.Elem(), nil, visitor)
+		visitor = walkWithKey(v.Elem(), nil, visitor)
 		if visitor == nil {
 			break
 		}
@@ -27,7 +27,7 @@ func visitWithKey(v reflect.Value, key interface{}, visitor VisitorWithKey) Visi
 			break
 		}
 		for i := 0; i < v.Len(); i++ {
-			visitor = visitWithKey(v.Index(i), i, visitor)
+			visitor = walkWithKey(v.Index(i), i, visitor)
 			if visitor == nil {
 				break
 			}
@@ -38,7 +38,7 @@ func visitWithKey(v reflect.Value, key interface{}, visitor VisitorWithKey) Visi
 			break
 		}
 		for i := 0; i < v.NumField(); i++ {
-			visitor = visitWithKey(v.Field(i), t.Field(i).Name, visitor)
+			visitor = walkWithKey(v.Field(i), t.Field(i).Name, visitor)
 			if visitor == nil {
 				break
 			}
@@ -49,7 +49,7 @@ func visitWithKey(v reflect.Value, key interface{}, visitor VisitorWithKey) Visi
 			break
 		}
 		for _, key := range v.MapKeys() {
-			visitor = visitWithKey(v.MapIndex(key), key.Interface(), visitor)
+			visitor = walkWithKey(v.MapIndex(key), key.Interface(), visitor)
 			if visitor == nil {
 				break
 			}
